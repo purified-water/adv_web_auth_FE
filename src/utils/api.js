@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_SERVER_URL,
+    baseURL: "https://adv-web-auth-be.onrender.com",
 });
 
 export default api;
