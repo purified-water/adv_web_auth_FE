@@ -27,7 +27,7 @@ export default function LoginScreen() {
             try {
                 const user = { email, password };
                 const response = await api.post(`/user/login`, user);
-                console.log(response);
+                console.log("BE", process.env.REACT_APP_SERVER_URL);
                 // Handle successful login (e.g., save token, redirect)
                 if (response.status === 200 || response.status === 201) {
                     setErrors((prev) => ({ ...prev, api: "" }));
