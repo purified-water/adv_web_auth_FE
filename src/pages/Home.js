@@ -23,7 +23,7 @@ export default function Home() {
           <>
             <img src="https://picsum.photos/200/300" alt="Random" className="mb-4" />
             <h1 className="mb-4 text-3xl font-bold">Hello, {username || 'Guest'} 👋</h1>
-            <LogoutButton onLogout={handleLogout} />
+            <LogoutButton/>
           </>
         ) : (
           <>
