@@ -4,10 +4,12 @@ import Navbar from '../components/Navbar';
 
 export default function Home() {
   const [username, setUsername] = useState('');
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
+    setToken(localStorage.getItem('token'));
+
     if (storedUsername) {
       setUsername(storedUsername);
     }
