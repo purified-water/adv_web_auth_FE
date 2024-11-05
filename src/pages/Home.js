@@ -4,16 +4,31 @@ import Navbar from '../components/Navbar';
 
 export default function Home() {
   const [username, setUsername] = useState('');
-  const [token, setToken] = useState();
+  const [token, setToken] = useState(null); // Initialize token as null
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    setToken(localStorage.getItem('token'));
+    const fetchToken = async () => {
+      // Simulate a token fetching process
+      const storedToken = localStorage.getItem('token');
+      const storedUsername = localStorage.getItem('username');
 
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-  }, []); // This effect runs only once after the initial render
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setToken(storedToken);
+      if (storedUsername) {
+        setUsername(storedUsername);
+      }
+
+      setLoading(false);
+    };
+
+    fetchToken();
+  }, []);
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen"><p>Loading...</p></div>;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
@@ -23,7 +38,7 @@ export default function Home() {
           <>
             <img src="https://picsum.photos/200/300" alt="Random" className="mb-4" />
             <h1 className="mb-4 text-3xl font-bold">Hello, {username || 'Guest'} 👋</h1>
-            <LogoutButton/>
+            <LogoutButton />
           </>
         ) : (
           <>
