@@ -13,7 +13,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<ProtectedRoute component={Home} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/profile" element={<ProtectedRoute component={Profile} />} />
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/login" element={<GuestRoute component={Login} />} />
