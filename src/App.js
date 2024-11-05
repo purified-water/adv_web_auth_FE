@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import { useEffect } from 'react';
+import Profile from './pages/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
 
 function App() {
-  // Check for token in local storage
-  const token = localStorage.getItem('token');
-  console.log(token);
-
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={token ? <Home /> : <Navigate to="/user/login" replace />} />
-        <Route path="/user/register" element={<Register />} />
-        <Route path="/user/login" element={!token ? <Login /> : <Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<ProtectedRoute component={Home} />} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} />} />
+          <Route path="/auth/register" element={<Register />} />
+          <Route path="/auth/login" element={<GuestRoute component={Login} />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

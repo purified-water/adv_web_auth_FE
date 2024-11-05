@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"
 import api from "../utils/api";
 import ErrorNotification from "../components/ErrorNotification";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({ email: "", password: "", api: "" });
     const [loading, setLoading] = useState(false);
+
+    const { login } = useContext(AuthContext); // Get login function from AuthContext
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
 
     const isEmailValid = (email) => /\S+@\S+\.\S+/.test(email);
 
@@ -26,22 +32,25 @@ export default function LoginScreen() {
             setLoading(true);
             try {
                 const user = { email, password };
-                const response = await api.post(`/user/login`, user);
-                // Handle successful login (e.g., save token, redirect)
+                const response = await api.post(`/auth/login`, user);
+
                 if (response.status === 200 || response.status === 201) {
                     setErrors((prev) => ({ ...prev, api: "" }));
                     setEmail("");
                     setPassword("");
-                    localStorage.setItem("token", response.data.token);
-                    window.location.href = "/";
+
+                    // Decode jwt to get id
+                    const token = response.data.token;
+                    const decoded = jwtDecode(token);
+
+                    // Use login from AuthContext to save token
+                    await login(response.data.token, response.data.username, decoded.id);
+                    navigate("/"); // Redirect to home
                 }
             } catch (error) {
-                // Handle errors from the API
                 if (error.response) {
-                    // API responded with an error status
                     setErrors((prev) => ({ ...prev, api: error.response.data.message }));
                 } else {
-                    // Network error or something else went wrong
                     setErrors((prev) => ({ ...prev, api: "An error occurred. Please try again." }));
                 }
             } finally {
@@ -50,11 +59,10 @@ export default function LoginScreen() {
         }
     };
 
-
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">
             <div className="w-full max-w-sm p-6 bg-white rounded shadow-md">
-                <h2 className="text-2xl font-semibold text-center text-gray-700 mb-2">Login</h2>
+                <h2 className="mb-2 text-2xl font-semibold text-center text-gray-700">Login</h2>
                 {errors.api && (
                     <ErrorNotification
                         message={errors.api}
@@ -97,7 +105,7 @@ export default function LoginScreen() {
                         {loading ? "Logging in..." : "Login"}
                     </button>
                     <div className="mt-2">
-                        <span className="text-sm text-gray-600">Don't have an account? <a href="/user/register" className="text-blue-500">Register</a></span>
+                        <span className="text-sm text-gray-600">Don't have an account? <a href="/auth/register" className="text-blue-500">Register</a></span>
                     </div>
                 </form>
             </div>
