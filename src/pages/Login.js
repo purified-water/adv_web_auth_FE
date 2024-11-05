@@ -45,7 +45,7 @@ export default function LoginScreen() {
 
                     // Use login from AuthContext to save token
                     await login(response.data.token, response.data.username, decoded.id);
-                    navigate("/"); // Redirect to home
+                    navigate("/", { state: { isLoggedIn: true } }); // Pass isLoggedIn state
                 }
             } catch (error) {
                 if (error.response) {

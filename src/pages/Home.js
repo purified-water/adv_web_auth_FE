@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import LogoutButton from '../components/LogoutButton';
 import Navbar from '../components/Navbar';
+import { useLocation } from 'react-router-dom';
 
 export default function Home() {
   const [username, setUsername] = useState('');
   const [token, setToken] = useState(null); // Initialize token as null
   const [loading, setLoading] = useState(true); // Loading state
+  const location = useLocation(); // Get location object
+  const isLoggedIn = location.state?.isLoggedIn;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -13,7 +16,7 @@ export default function Home() {
       const storedToken = localStorage.getItem('token');
       const storedUsername = localStorage.getItem('username');
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       setToken(storedToken);
       if (storedUsername) {
@@ -34,7 +37,7 @@ export default function Home() {
     <div className="flex flex-col h-screen bg-gray-100">
       <Navbar />
       <div className="flex flex-col items-center justify-center flex-grow">
-        {token ? (
+        {isLoggedIn ? (
           <>
             <img src="https://picsum.photos/200/300" alt="Random" className="mb-4" />
             <h1 className="mb-4 text-3xl font-bold">Hello, {username || 'Guest'} 👋</h1>
