@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import LogoutButton from '../components/LogoutButton';
 import Navbar from '../components/Navbar';
-import { useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 export default function Home() {
-  const [username, setUsername] = useState('');
-  const [token, setToken] = useState(null); // Initialize token as null
-  const [loading, setLoading] = useState(true); // Loading state
-  const location = useLocation(); // Get location object
-  const isLoggedIn = location.state?.isLoggedIn;
+  const [usernameFromContext, setUsernameFromContext] = useState();
+  const [tokenFromContext, setTokenFromContext] = useState();
+  const [loading, setLoading] = useState(true);
+  const { token, username } = useContext(AuthContext);
+
+  
+  async function FetchToken () {
+    setTokenFromContext(token);
+    setUsernameFromContext(username);
+    setLoading(false);
+  }
 
   useEffect(() => {
-    const fetchToken = async () => {
-      // Simulate a token fetching process
-      const storedToken = localStorage.getItem('token');
-      const storedUsername = localStorage.getItem('username');
-
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      setToken(storedToken);
-      if (storedUsername) {
-        setUsername(storedUsername);
-      }
-
-      setLoading(false);
-    };
-
-    fetchToken();
+    FetchToken();
   }, []);
 
   if (loading) {
@@ -37,10 +28,10 @@ export default function Home() {
     <div className="flex flex-col h-screen bg-gray-100">
       <Navbar />
       <div className="flex flex-col items-center justify-center flex-grow">
-        {isLoggedIn ? (
+        {tokenFromContext ? (
           <>
             <img src="https://picsum.photos/200/300" alt="Random" className="mb-4" />
-            <h1 className="mb-4 text-3xl font-bold">Hello, {username || 'Guest'} 👋</h1>
+            <h1 className="mb-4 text-3xl font-bold">Hello, {usernameFromContext || 'Guest'} 👋</h1>
             <LogoutButton />
           </>
         ) : (

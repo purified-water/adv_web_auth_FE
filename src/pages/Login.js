@@ -42,10 +42,10 @@ export default function LoginScreen() {
                     // Decode jwt to get id
                     const token = response.data.token;
                     const decoded = jwtDecode(token);
-
+                    
                     // Use login from AuthContext to save token
-                    await login(response.data.token, response.data.username, decoded.id);
-                    navigate("/", { state: { isLoggedIn: true } }); // Pass isLoggedIn state
+                    login(response.data.token, response.data.username, decoded.id);
+                    navigate("/");
                 }
             } catch (error) {
                 if (error.response) {

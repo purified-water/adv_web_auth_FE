@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import LogoutButton from '../components/LogoutButton';
 import Navbar from '../components/Navbar';
 import api from '../utils/api';
 import ErrorNotification from '../components/ErrorNotification';
+import { AuthContext } from '../context/AuthContext';
 
 export default function Profile() {
     const [user, setUser] = useState({
@@ -12,8 +13,9 @@ export default function Profile() {
         email: '',
         createdAt: '',
     });
-    const userId = localStorage.getItem('userId'); // Only userId is needed from local storage
+    const { userId } = useContext(AuthContext);
     const [error, setError] = useState('');
+    const { token } = useContext(AuthContext);
 
     const fetchUser = async () => {
         try {
@@ -44,7 +46,7 @@ export default function Profile() {
                     </div>
 
                     <div className="flex items-center justify-center mt-9">
-                        {localStorage.getItem('token') && <LogoutButton />}
+                        {token && <LogoutButton />}
                     </div>
                 </div>
 
